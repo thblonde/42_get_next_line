@@ -16,6 +16,5 @@ char	*ft_strchr(char *s, int c);
 char	*ft_strcpy(char *dst, char *src);
 char	*ft_strjoin(char *s1, char *s2);
 char	*ft_substr(char *s, unsigned int start, int len);
-void	free_alloc(char **ptr);
 
 #endif

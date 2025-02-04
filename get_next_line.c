@@ -1,22 +1,24 @@
 #include "get_next_line.h"
 
-void	free_alloc(char **ptr)
-{
-	free(*ptr);
-	*ptr = NULL;
-}
-
 char	*read_file(int fd, char *stash)
 {
-    char    buf[BUFFER_SIZE];
-	int     nread;
+    char        buf[BUFFER_SIZE];
+	int         nread;
+    int         i;
 
 	nread = 1;
+    i = 0;
+    while (i < BUFFER_SIZE)
+    {
+        buf[i] = '\0';
+        i++;
+    }
 	while (nread && !(ft_strchr(buf, '\n')))
 	{
 		nread = read(fd, buf, BUFFER_SIZE);
 		if (nread == -1)
-			return (free_alloc(&stash), NULL);
+			return (free(stash), NULL);
+        buf[nread] = '\0';
 		stash = ft_strjoin(stash, buf);
 		if (!stash)
 			return (NULL);
@@ -26,8 +28,8 @@ char	*read_file(int fd, char *stash)
 
 char    *extract_line(char *stash)
 {
-    char    *line;
-    int     i;
+    char        *line;
+    int         i;
 
     i = 0;
     line = NULL;
@@ -43,19 +45,19 @@ char    *extract_line(char *stash)
 
 char    *clean_stash(char *stash)
 {
-    char    *tmp;
-    int  i;
+    char        *tmp;
+    int         i;
 
     tmp = NULL;
     i = 0;
     while (stash[i] && stash[i] != '\n')
         i++;
     if (stash[i] == '\0')
-        return (NULL);
+        return (free(stash), NULL);
     tmp = ft_substr(stash, i + 1, ft_strlen(stash));
     if (!tmp)
         return (NULL);
-    free_alloc(&stash);
+    free(stash);
     return (tmp);
 }
 
@@ -70,6 +72,8 @@ char    *get_next_line(int fd)
     if (!stash)
         return (NULL);
     line = extract_line(stash);
+    if (!line)
+        return (free(stash), NULL);
     stash = clean_stash(stash);
     return (line);
 }
